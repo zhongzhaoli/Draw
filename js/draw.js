@@ -16,24 +16,58 @@
         "奖品11": 10,
         "奖品23": 30,
     }
-    //跳动多少次（根据几率）
-    let probability_num = 20;
     //速度
-    let speed = 100;
+    let speed = 1;
     //动画定时器
     let active_interval;
     //状态
     let status = false;
     //可否转动
     let can_start = false;
+    //奖品数量
+    let prize_len = 0;
+    let admin_num = null;
     
 
     //主函数
     let main = function(){
         return this;
     }
+    //跳动数量计算函数
+    let calculation_num = function(){
+        let num_arr = [];
+        let to_peace = 0;
+        let sj_num = parseInt(Math.random() * 1000);
+        for(let i = 0; i < 1000; i++){
+            num_arr.push(i);
+        }
+        //打乱数组
+        num_arr = num_arr.shuffle(num_arr);
+        let sj_num_index = num_arr.indexOf(sj_num);
+        for(let i = 0; i < Object.values(Prize).length; i++){
+            let now_values = Object.values(Prize)[i];
+            to_peace = to_peace + now_values;
+            //小于多少就是他了
+            if(sj_num_index < to_peace){
+                console.log(Object.keys(Prize)[i]);
+                return Object.keys(Prize).indexOf(Object.keys(Prize)[i]);
+            }
+        }
+    }
     //动画切换中奖项
     let active_anm = function(){
+        //跳动多少次（根据几率）
+        let probability_num = 0,
+            calculation_num_;
+        //跳动数量计算
+        if(admin_num === null){
+            calculation_num_ = calculation_num();
+            probability_num = calculation_num_ + 1 + (prize_len * (parseInt(Math.random() * 3) + 1));
+        }
+        else{
+            probability_num = admin_num + 1 + (prize_len * (parseInt(Math.random() * 3) + 1));
+            admin_num = null;
+        }
         //active跳到的项
         let now_num = 1;
         //跳动次数 从1开始
@@ -46,7 +80,6 @@
             }
             $(".active").removeClass("active");
             let all_num = Object.keys(Prize).length;
-            let need_active = 0;
             //最后一个亮，要跳到第一个
             $(".draw_big_div").children().eq(now_num - 1).addClass("active");
             if(now_num === all_num){
@@ -79,12 +112,29 @@
             for(let i in Prize){
                 $("<div class='draw_div' data-probability="+ Prize[i]  +">"+ i +"</div>").appendTo($(".draw_big_div"));
             }
+            //奖品数量
+            prize_len = Object.keys(Prize).length;
         }
     }
     main.prototype.start = function(){
         if(!status && can_start){
             active_anm();
         }
+    }
+    main.prototype.admin = function(num){
+        admin_num = num - 1;
+        return "设置成功";
+    }
+    
+    Array.prototype.shuffle = function(arr){
+        for(let i = 0; i < arr.length; i++){
+            let first_ran = parseInt(Math.random() * arr.length);
+            let secound_ran = parseInt(Math.random() * arr.length);
+            let num_one = arr[first_ran];
+            arr[first_ran] = arr[secound_ran];
+            arr[secound_ran] = num_one;
+        }
+        return arr;
     }
     var Draw = new main();
     window.Draw = Draw;
