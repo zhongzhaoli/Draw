@@ -10,16 +10,20 @@
 
     //奖品几率 以1000来计算分数 1% = 10 0.1% = 1
     let Prize = {
-        "奖品1": 100,
-        "奖品2": 200,
-        "奖品3": 10,
-        "奖品4": 1,
-        "奖品5": 199,
-        "奖品8": 400,
-        "奖品9": 20,
-        "奖品10": 30,
-        "奖品11": 10,
-        "奖品23": 30,
+        "哈士奇": 1,
+        "逗逗狗": 1,
+        "小公仔": 30,
+        "山药脆片": 15,
+        "法丽滋抹茶饼干": 20,
+        "神秘人小心点饼干": 10,
+        "韩国进口海苔紫菜": 15,
+        "呀土豆": 20,
+        "欢乐猴棒棒糖": 50,
+        "一张蒸汽眼罩": 200,
+        "半价购": 50,
+        "七折购": 100,
+        "八折购": 200,
+        "立减五元": 288,
     }
     //跳动速度
     let speed = 100;
@@ -32,6 +36,8 @@
     //奖品数量
     let prize_len = 0;
     let admin_num = null;
+    //测试数组
+    let test_obj = {};
 
 
     //主函数
@@ -39,7 +45,7 @@
         return this;
     }
     //跳动数量计算函数
-    let calculation_num = function () {
+    let calculation_num = function (test = false) {
         //数组清空
         let num_arr = [];
         //当前循环的范围数
@@ -62,9 +68,21 @@
             to_peace = to_peace + now_values;
             //小于多少就是他了
             if (sj_num_index < to_peace) {
+                //测试的话
+                if(test){
+                    if(test_obj[Object.keys(Prize)[i]]){
+                        test_obj[Object.keys(Prize)[i]] = test_obj[Object.keys(Prize)[i]] + 1;
+                    }
+                    else{
+                        test_obj[Object.keys(Prize)[i]] = 1;
+                    }
+                }
+                //返回中奖奖品所在的位置 与跳动数有关
+                if(test){
+                    return test_obj;
+                }
                 //打印中奖奖品
                 console.log(Object.keys(Prize)[i]);
-                //返回中奖奖品所在的位置 与跳动数有关
                 return Object.keys(Prize).indexOf(Object.keys(Prize)[i]);
             }
         }
@@ -152,7 +170,13 @@
         admin_num = num - 1;
         return "设置成功";
     }
-
+    main.prototype.test = function(num){
+        test_obj = {};
+        for(let i = 0; i < num; i++){
+            calculation_num(true);
+        }
+        return test_obj;
+    }
     Array.prototype.shuffle = function (arr) {
         //数组打乱 随机两个数 互相调换
         for (let i = 0; i < arr.length; i++) {
